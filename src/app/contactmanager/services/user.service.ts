@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { resolve } from 'dns';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,14 @@ export class UserService {
      return this._users.asObservable();
    }
 
+   addUser(user: User): Promise<User> {
+     return new Promise((resolver, reject) => {
+       user.id = this.dataStore.users.length + 1;
+       this.dataStore.users.push(user);
+       this._users.next(Object.assign({}, this.dataStore).users);
+       resolver(user);
+     });
+   }
    userById(id: number) {
      return this.dataStore.users.find(x => x.id == id);
    }
