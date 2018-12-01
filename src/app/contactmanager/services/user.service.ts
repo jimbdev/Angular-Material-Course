@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { resolve } from 'dns';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +24,7 @@ export class UserService {
    }
 
    addUser(user: User): Promise<User> {
-     return new Promise((resolver, reject) => {
+     return new Promise((resolver) => {
        user.id = this.dataStore.users.length + 1;
        this.dataStore.users.push(user);
        this._users.next(Object.assign({}, this.dataStore).users);
@@ -42,8 +41,8 @@ export class UserService {
         .subscribe( data => {
           this.dataStore.users = data;
           this._users.next(Object.assign({}, this.dataStore).users);
-        }, error => { 
-          console.log("Failed to fetch users");
-      });
+        }, () => {
+            console.log("Failed to fetch users");
+          });
    }
 }
